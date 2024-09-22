@@ -12,7 +12,7 @@ There are also reference implementations in other languages:
 
 ## Origin, Authors, Copyright & Licenses
 
-Unless otherwise noted (either in this README.md or in the file's header comments) the contents of this repository are Copyright © 2023 Foundation Devices, Inc. and [Your Name], and are [licensed](./LICENSE) under the [MIT License](https://opensource.org/licenses/MIT).
+Unless otherwise noted (either in this README.md or in the file's header comments) the contents of this repository are Copyright © 2024 Aleksandr Bukata, and are [licensed](./LICENSE) under the [MIT License](https://opensource.org/licenses/MIT).
 
 This code is a Dart port of the original Python implementation by Foundation Devices. See
 [Foundation Devices Python UR Library](https://github.com/Foundation-Devices/foundation-ur-py) for the original version.
