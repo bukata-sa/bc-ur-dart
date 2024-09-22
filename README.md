@@ -1,4 +1,4 @@
-# Foundation Devices Dart UR Library
+# Dart UR Library
 
 **UR Implementation in Dart -- ported from the [Python Reference Implementation](https://github.com/Foundation-Devices/foundation-ur-py)**
 
@@ -84,6 +84,6 @@ Ensure that you add new unit tests for new or modified functionality.
 
 ## Version History
 
-### 0.1.0, [Current Date] - Initial release
+### 0.1.0, [22.09.2024] - Initial release
 
 * Initial Dart port and testing release.
