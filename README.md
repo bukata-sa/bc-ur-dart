@@ -45,31 +45,47 @@ dependencies:
     import 'package:ur/ur.dart';
     ```
 
-2. Example usage:
+2. Example usage from `ur_test.dart`
 
     ```dart
-    void main() {
-      final ur = makeMessageUr(32767);
-      const maxFragmentLen = 1000;
-      const firstSeqNum = 100;
-      final encoder = UREncoder(ur, maxFragmentLen, firstSeqNum);
-      final decoder = URDecoder();
-      
-      while (true) {
-        final part = encoder.nextPart();
-        decoder.receivePart(part);
-        if (decoder.isComplete()) {
-          break;
-        }
-      }
+    test('UR Encode json', () {
+      var sourceJson = {
+        "int": 123,
+        "bool": true,
+        "str": "hello",
+        "list": [1, 2, 3],
+        "map": {"a": 1, "b": 2},
+        "null": null
+      };
+      var sourceBytes = utf8.encode(json.encode(sourceJson));
+      var cborEncoder = CBOREncoder();
+      cborEncoder.encodeBytes(sourceBytes);
+      var ur = UR("bytes", cborEncoder.getBytes());
+      var encoded = UREncoder.encode(ur);
+      expect(
+          encoded,
+          equals(
+              'ur:bytes/hdghkgcpinjtjycpfteheyeodwcpidjljljzcpftjyjpkpihdwcpjkjyjpcpftcpisihjzjzjlcpdwcpjzinjkjycpfthpehdweydweohldwcpjnhsjocpftkgcphscpftehdwcpidcpfteykidwcpjtkpjzjzcpftjtkpjzjzkidndrpmhe'));
+    });
 
-      if (decoder.isSuccess()) {
-        assert(decoder.result == ur);
-      } else {
-        print('Error: ${decoder.result}');
-        assert(false);
-      }
-    }
+    test('UR Decode json', () {
+      var source =
+          'ur:bytes/hdghkgcpinjtjycpfteheyeodwcpidjljljzcpftjyjpkpihdwcpjkjyjpcpftcpisihjzjzjlcpdwcpjzinjkjycpfthpehdweydweohldwcpjnhsjocpftkgcphscpftehdwcpidcpfteykidwcpjtkpjzjzcpftjtkpjzjzkidndrpmhe';
+      var ur = URDecoder.decode(source);
+      var cborDecorder = CBORDecoder(ur.cbor);
+      var (bytes, length) = cborDecorder.decodeBytes();
+      var decoded = utf8.decode(bytes);
+      expect(
+          json.decode(decoded),
+          equals({
+            "int": 123,
+            "bool": true,
+            "str": "hello",
+            "list": [1, 2, 3],
+            "map": {"a": 1, "b": 2},
+            "null": null
+          }));
+    });
     ```
 
 ## Development
