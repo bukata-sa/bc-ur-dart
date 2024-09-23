@@ -1,13 +1,16 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:ur/bytewords.dart' as Bytewords;
+import 'package:ur/cbor_lite.dart';
 import 'package:ur/xoshiro256.dart';
 import 'package:ur/fountain_encoder.dart';
 import 'package:ur/fountain_decoder.dart';
 import 'package:ur/fountain_utils.dart';
 import 'package:ur/ur_encoder.dart';
 import 'package:ur/ur_decoder.dart';
+import 'package:ur/ur.dart';
 import 'package:ur/random_sampler.dart' show RandomSampler;
 import 'package:ur/utils.dart';
 
@@ -1539,6 +1542,45 @@ void main() {
       } else {
         fail(decoder.resultError().toString());
       }
+    });
+
+    test('UR Encode json', () {
+      var sourceJson = {
+        "int": 123,
+        "bool": true,
+        "str": "hello",
+        "list": [1, 2, 3],
+        "map": {"a": 1, "b": 2},
+        "null": null
+      };
+      var sourceBytes = utf8.encode(json.encode(sourceJson));
+      var cborEncoder = CBOREncoder();
+      cborEncoder.encodeBytes(sourceBytes);
+      var ur = UR("bytes", cborEncoder.getBytes());
+      var encoded = UREncoder.encode(ur);
+      expect(
+          encoded,
+          equals(
+              'ur:bytes/hdghkgcpinjtjycpfteheyeodwcpidjljljzcpftjyjpkpihdwcpjkjyjpcpftcpisihjzjzjlcpdwcpjzinjkjycpfthpehdweydweohldwcpjnhsjocpftkgcphscpftehdwcpidcpfteykidwcpjtkpjzjzcpftjtkpjzjzkidndrpmhe'));
+    });
+
+    test('UR Decode json', () {
+      var source =
+          'ur:bytes/hdghkgcpinjtjycpfteheyeodwcpidjljljzcpftjyjpkpihdwcpjkjyjpcpftcpisihjzjzjlcpdwcpjzinjkjycpfthpehdweydweohldwcpjnhsjocpftkgcphscpftehdwcpidcpfteykidwcpjtkpjzjzcpftjtkpjzjzkidndrpmhe';
+      var ur = URDecoder.decode(source);
+      var cborDecorder = CBORDecoder(ur.cbor);
+      var (bytes, length) = cborDecorder.decodeBytes();
+      var decoded = utf8.decode(bytes);
+      expect(
+          json.decode(decoded),
+          equals({
+            "int": 123,
+            "bool": true,
+            "str": "hello",
+            "list": [1, 2, 3],
+            "map": {"a": 1, "b": 2},
+            "null": null
+          }));
     });
   });
 }
