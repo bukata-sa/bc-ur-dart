@@ -166,6 +166,10 @@ class URDecoder {
   }
 
   double estimatedPercentComplete() {
+    // Single-part URs never reach the fountain decoder
+    if (isComplete()) {
+      return 1;
+    }
     return fountainDecoder.estimatedPercentComplete();
   }
 

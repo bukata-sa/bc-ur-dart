@@ -1582,6 +1582,14 @@ void main() {
             "null": null
           }));
     });
+
+    test('Single-part UR reports complete', () {
+      var ur = UR('bytes', Uint8List.fromList([1, 2, 3, 4]));
+      var decoder = URDecoder();
+      expect(decoder.receivePart(UREncoder.encode(ur)), true);
+      expect(decoder.isSuccess(), true);
+      expect(decoder.estimatedPercentComplete(), 1);
+    });
   });
 }
 
